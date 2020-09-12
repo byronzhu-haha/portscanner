@@ -16,7 +16,7 @@ type resultGroup struct {
 type ResultManager map[string]*resultGroup
 
 func newResultManager() ResultManager {
-	return map[string]*resultGroup{}
+	return ResultManager{}
 }
 
 func (m ResultManager) addResult(result result) {
@@ -27,6 +27,7 @@ func (m ResultManager) addResult(result result) {
 		res = &resultGroup{
 			ip: result.ip,
 		}
+		m[result.ip] = res
 	}
 	switch result.state {
 	case PortOpened:

@@ -6,35 +6,39 @@ type task struct {
 }
 
 type TaskManager struct {
+	taskNum      int32
 	ips          []string
 	ports        []int
 	consumerDone chan struct{}
-	producerDone chan int
+	producerDone chan int32
 	tasks        chan task
 }
 
 func newTaskManager(ips []string, ports []int, goroutines int32) *TaskManager {
+	taskNum := int32(len(ips) * len(ports))
+	if taskNum < goroutines {
+		goroutines = taskNum
+	}
 	return &TaskManager{
+		taskNum:      taskNum,
 		ips:          ips,
 		ports:        ports,
 		consumerDone: make(chan struct{}),
-		producerDone: make(chan int),
+		producerDone: make(chan int32),
 		tasks:        make(chan task, goroutines),
 	}
 }
 
 func (m *TaskManager) productTask() {
-	var count int
 	for _, ip := range m.ips {
 		for _, port := range m.ports {
-			count++
 			m.tasks <- task{
 				ip:   ip,
 				port: port,
 			}
 		}
 	}
-	m.producerDone <- count
+	m.producerDone <- m.taskNum
 	close(m.tasks)
 }
 

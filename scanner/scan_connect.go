@@ -3,6 +3,7 @@ package scanner
 import (
 	"github.com/byronzhu-haha/portscanner/logger"
 	"net"
+	"sort"
 	"strings"
 )
 
@@ -30,8 +31,8 @@ func (s *connectScanner) Start() {
 	go s.taskMgr.productTask()
 	go func() {
 		var (
-			total  int
-			count  int
+			count  int32
+			total  int32
 			result result
 		)
 		for {
@@ -40,6 +41,7 @@ func (s *connectScanner) Start() {
 				count++
 				s.resultMgr.addResult(result)
 			case total = <-s.taskMgr.producerDone:
+				s.logger.Infof("product tasks finished!")
 				if total == count {
 					s.taskMgr.consumerDone <- struct{}{}
 					s.logger.Infof("scan finished!")
@@ -47,6 +49,7 @@ func (s *connectScanner) Start() {
 				}
 			}
 			if total != 0 && count >= total {
+				s.logger.Infof("consume tasks finished!")
 				s.taskMgr.consumerDone <- struct{}{}
 				break
 			}
@@ -92,16 +95,16 @@ func (s *connectScanner) Output() {
 	}
 	s.logger.Infof("start print result:")
 	for ip, group := range s.resultMgr {
-		s.logger.Debugf(`ip(%s): 
-										opened port: %+v,
-										closed port: %+v,
-										unknown port: %+v.`,
+		sort.Ints(group.openedPorts)
+		sort.Ints(group.closedPorts)
+		sort.Ints(group.unknownPorts)
+		s.logger.Debugf(
+			"ip(%s):\n\t\t\t\topened port: %+v,\n\t\t\t\tclosed port: %+v,\n\t\t\t\tunknown port: %+v.",
 			ip,
 			group.openedPorts,
 			group.closedPorts,
 			group.unknownPorts,
 		)
 	}
-
 	s.logger.Infof("end print result.")
 }

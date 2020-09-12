@@ -38,7 +38,12 @@ func NewLogger(opts ...Option) Logger {
 		l.opt = opt(l.opt)
 	}
 	if l.opt.isWroteFile {
-		f, err := os.Create(l.opt.filePath + "/" + l.opt.fileName)
+		if l.opt.filePath != "." {
+			l.mkdir()
+		} else if !strings.HasSuffix(l.opt.filePath, string(os.PathSeparator)) {
+			l.opt.filePath += string(os.PathSeparator)
+		}
+		f, err := os.OpenFile(l.opt.filePath + l.opt.fileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 		if err != nil {
 			panic(err)
 		}
@@ -123,8 +128,17 @@ func (l *logger) write() {
 	if l.buf.Len() <= 0 {
 		return
 	}
-	_, err := l.buf.WriteTo(l.wr)
+	_, err := l.wr.WriteString(l.buf.String())
 	if err != nil {
 		println(err)
+	}
+}
+
+func (l *logger) mkdir() {
+	f, err := os.Stat(l.opt.filePath)
+	if err != nil || f.IsDir() == false {
+		if err := os.Mkdir(l.opt.filePath, os.ModePerm); err != nil {
+			panic("日志目录创建失败, "+err.Error())
+		}
 	}
 }
