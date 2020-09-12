@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+const (
+	defaultFlushSec = 30
+	writeByteSize   = 2048
+)
+
 type Logger interface {
 	Printf(format string, v ...interface{})
 	Infof(format string, v ...interface{})
@@ -38,9 +43,6 @@ func NewLogger(opts ...Option) Logger {
 			panic(err)
 		}
 		l.file = f
-		if l.opt.flushSec <= 0 {
-			l.opt.flushSec = 30
-		}
 		l.wr = bufio.NewWriter(f)
 		go l.backgroundWrite()
 	}
@@ -68,8 +70,10 @@ func (l *logger) Errorf(format string, v ...interface{}) {
 }
 
 func (l *logger) Close() {
-	_ = l.file.Close()
-	_ = l.wr.Flush()
+	if l.opt.isWroteFile {
+		_ = l.wr.Flush()
+		_ = l.file.Close()
+	}
 }
 
 func (l *logger) print(head, format string, v ...interface{}) {
@@ -93,6 +97,11 @@ func (l *logger) print(head, format string, v ...interface{}) {
 	_, err := l.buf.WriteString(format)
 	if err != nil {
 		println(err)
+		l.mu.Unlock()
+		return
+	}
+	if l.buf.Len() >= writeByteSize {
+		l.write()
 	}
 	l.mu.Unlock()
 }
@@ -105,9 +114,17 @@ func (l *logger) backgroundWrite() {
 	t := time.NewTicker(time.Duration(l.opt.flushSec) * time.Second)
 	for range t.C {
 		l.mu.Lock()
-		if l.buf.Len() != 0 {
-			_, _  = l.buf.WriteTo(l.wr)
-		}
+		l.write()
 		l.mu.Unlock()
+	}
+}
+
+func (l *logger) write() {
+	if l.buf.Len() <= 0 {
+		return
+	}
+	_, err := l.buf.WriteTo(l.wr)
+	if err != nil {
+		println(err)
 	}
 }

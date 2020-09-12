@@ -15,22 +15,13 @@ type connectScanner struct {
 	logger     logger.Logger
 }
 
-func newConnectScanner(ips []string, ports []int, conf Config) PortScanner {
-	var loggerOpts []logger.Option
-	if conf.isPrintLog {
-		loggerOpts = append(loggerOpts, logger.OpenPrint())
-	}
-	if conf.isWroteFile {
-		loggerOpts = append(loggerOpts, logger.OpenWriteFile())
-		loggerOpts = append(loggerOpts, logger.LogFilePath(conf.logFilePath))
-		loggerOpts = append(loggerOpts, logger.LogFileName(conf.logFileName))
-	}
+func newConnectScanner(ips []string, ports []int, conf Config, logger logger.Logger) PortScanner {
 	return &connectScanner{
 		result:    make(chan result, conf.goroutines),
 		resultMgr: newResultManager(),
 		conf:      conf,
 		taskMgr:   newTaskManager(ips, ports, conf.goroutines),
-		logger:    logger.NewLogger(loggerOpts...),
+		logger:    logger,
 	}
 }
 

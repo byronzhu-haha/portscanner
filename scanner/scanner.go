@@ -1,6 +1,9 @@
 package scanner
 
-import "strconv"
+import (
+	"github.com/byronzhu-haha/portscanner/logger"
+	"strconv"
+)
 
 type PortScanner interface {
 	Start()
@@ -25,14 +28,14 @@ const (
 	PortClosed
 )
 
-func NewScanner(ips []string, ports []int, opts ...Option) PortScanner {
+func NewScanner(ips []string, ports []int, logger logger.Logger, opts ...Option) PortScanner {
 	conf := Config{}
 	for _, opt := range opts {
 		conf = opt(conf)
 	}
 	switch conf.typ {
 	case Connect:
-		return newConnectScanner(ips, ports, conf)
+		return newConnectScanner(ips, ports, conf, logger)
 	case SYN:
 		return newSynScanner()
 	case FIN:
@@ -40,7 +43,7 @@ func NewScanner(ips []string, ports []int, opts ...Option) PortScanner {
 	case Device:
 		return newDeviceScanner()
 	default:
-		return newConnectScanner(ips, ports, conf)
+		return newConnectScanner(ips, ports, conf, logger)
 	}
 }
 
