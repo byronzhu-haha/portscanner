@@ -28,7 +28,7 @@ type logger struct {
 	opt  Options
 	file *os.File
 	wr   *bufio.Writer
-	buf  bytes.Buffer
+	buf  *bytes.Buffer
 	mu   sync.Mutex
 }
 
@@ -47,6 +47,7 @@ func NewLogger(opts ...Option) Logger {
 		if err != nil {
 			panic(err)
 		}
+		l.buf = &bytes.Buffer{}
 		l.file = f
 		l.wr = bufio.NewWriter(f)
 		go l.backgroundWrite()
@@ -76,6 +77,7 @@ func (l *logger) Errorf(format string, v ...interface{}) {
 
 func (l *logger) Close() {
 	if l.opt.isWroteFile {
+		l.write()
 		_ = l.wr.Flush()
 		_ = l.file.Close()
 	}
