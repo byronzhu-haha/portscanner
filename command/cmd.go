@@ -121,7 +121,7 @@ func (a *Arguments) parseIP() []string {
 	}
 	var (
 		res []string
-		set = bitset.NewStringBitSet()
+		set = bitset.NewBloomFilter()
 	)
 	addIP := func(ip string) {
 		addr, err := net.ResolveIPAddr("ip", ip)
