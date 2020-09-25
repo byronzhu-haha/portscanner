@@ -1,7 +1,7 @@
 package scanner
 
 import (
-	"github.com/byronzhu-haha/portscanner/logger"
+	"github.com/byronzhu-haha/log"
 	"strconv"
 )
 
@@ -28,7 +28,7 @@ const (
 	PortClosed
 )
 
-func NewScanner(ips []string, ports []int, logger logger.Logger, opts ...Option) PortScanner {
+func NewScanner(ips []string, ports []int, logger log.Logger, opts ...Option) PortScanner {
 	conf := Config{}
 	for _, opt := range opts {
 		conf = opt(conf)

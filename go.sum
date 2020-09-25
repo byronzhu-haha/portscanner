@@ -8,6 +8,10 @@ github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/byronzhu-haha/bitset v0.0.0-20200913105408-2d8de79ccda2 h1:JJUYB7zj9ofy5UgJmDC2Zb9Xox91r2/lyMQh7ujYI+4=
 github.com/byronzhu-haha/bitset v0.0.0-20200913105408-2d8de79ccda2/go.mod h1:SlPmvyNkNsnR62Az/PK/tspzDEJGkBzV/PKbSWcOgMg=
+github.com/byronzhu-haha/log v0.0.0-20200925034758-a66a4b39079f h1:hEjKiN3RbbeSbiZO8Qd3ZD1EKyAG2klhvmy4Ri2g+Y0=
+github.com/byronzhu-haha/log v0.0.0-20200925034758-a66a4b39079f/go.mod h1:mbxDtM/YGtQ7I4f59DSaOJ7UC3B+CpKB6PWFrNAVMM4=
+github.com/byronzhu-haha/log v0.0.0-20200925075324-6951a2e0071a h1:keTMZS6Y5zgfnxQjzLo1VxBVv6hnOsebUuS+BEr/xYM=
+github.com/byronzhu-haha/log v0.0.0-20200925075324-6951a2e0071a/go.mod h1:mbxDtM/YGtQ7I4f59DSaOJ7UC3B+CpKB6PWFrNAVMM4=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=

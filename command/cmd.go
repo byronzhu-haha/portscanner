@@ -3,7 +3,7 @@ package command
 import (
 	"fmt"
 	"github.com/byronzhu-haha/bitset"
-	"github.com/byronzhu-haha/portscanner/logger"
+	"github.com/byronzhu-haha/log"
 	"github.com/byronzhu-haha/portscanner/scanner"
 	"github.com/spf13/cobra"
 	"net"
@@ -273,13 +273,13 @@ func (a *Arguments) parseScanType() scanner.TypeScanner {
 	}
 }
 
-func (a *Arguments) parseLogger() logger.Logger {
-	var loggerOpts []logger.Option
+func (a *Arguments) parseLogger() log.Logger {
+	var loggerOpts []log.Option
 	if *a.isPrint {
-		loggerOpts = append(loggerOpts, logger.OpenPrint())
+		loggerOpts = append(loggerOpts, log.OpenPrint())
 	}
 	if !*a.isWroteFile {
-		return logger.NewLogger(loggerOpts...)
+		return log.NewLogger(loggerOpts...)
 	}
 	filepath := *a.filePath
 	if filepath == "" {
@@ -295,11 +295,11 @@ func (a *Arguments) parseLogger() logger.Logger {
 	if flushSec <= 0 {
 		flushSec = 30
 	}
-	loggerOpts = append(loggerOpts, logger.OpenWriteFile())
-	loggerOpts = append(loggerOpts, logger.LogFilePath(filepath))
-	loggerOpts = append(loggerOpts, logger.LogFileName(filename))
-	loggerOpts = append(loggerOpts, logger.FlushSec(flushSec))
-	return logger.NewLogger(loggerOpts...)
+	loggerOpts = append(loggerOpts, log.OpenWriteFile())
+	loggerOpts = append(loggerOpts, log.Filepath(filepath))
+	loggerOpts = append(loggerOpts, log.FileName(filename))
+	loggerOpts = append(loggerOpts, log.FlushSec(flushSec))
+	return log.NewLogger(loggerOpts...)
 }
 
 func exit(msg string, code int) {

@@ -1,7 +1,7 @@
 package scanner
 
 import (
-	"github.com/byronzhu-haha/portscanner/logger"
+	"github.com/byronzhu-haha/log"
 	"net"
 	"sort"
 	"strings"
@@ -13,10 +13,10 @@ type connectScanner struct {
 	resultMgr  ResultManager
 	conf       Config
 	taskMgr    *TaskManager
-	logger     logger.Logger
+	logger     log.Logger
 }
 
-func newConnectScanner(ips []string, ports []int, conf Config, logger logger.Logger) PortScanner {
+func newConnectScanner(ips []string, ports []int, conf Config, logger log.Logger) PortScanner {
 	return &connectScanner{
 		result:    make(chan result, conf.goroutines),
 		resultMgr: newResultManager(),
